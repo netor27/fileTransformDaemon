@@ -1,6 +1,10 @@
 # Netbeans project folder #
 /nbproject/
 
+# Generated files
+/temporal/
+/temporal/*
+
 # OS generated files #
 ######################
 *.lock
