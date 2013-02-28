@@ -11,4 +11,4 @@ stop on starting rc RUNLEVEL=[016]
 respawn
 respawn limit 2 5
 
-exec php /home/neto/fileTransformDaemon/startTransform.php
+exec php /home/user/fileTransformDaemon/startTransform.php

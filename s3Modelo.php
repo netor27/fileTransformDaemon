@@ -12,7 +12,7 @@ use Aws\S3\Model\MultipartUpload\UploadBuilder;
 function uploadFileToS3($sourceFile, $bucket, $folder = "") {
     $resultado = array("res" => false);
     // Instanciamos un cliente de s3
-    $client = Aws::factory('/home/neto/fileTransformDaemon/configurationFile.php')->get('s3');
+    $client = Aws::factory( __DIR__ . '/configurationFile.php')->get('s3');
     $key = generateFileKey($sourceFile, $folder);
     while ($client->doesObjectExist($bucket, $key)) {
         //Si ese objeto ya existe, generamos otro key
@@ -66,7 +66,7 @@ function generateFileKey($sourceFile, $folder = "") {
 }
 
 function deleteFileFromS3($bucket, $key) {
-    $client = Aws::factory('/home/neto/fileTransformDaemon/configurationFile.php')->get('s3');
+    $client = Aws::factory( __DIR__ . '/configurationFile.php')->get('s3');
     try {
         $client->deleteObject(array(
             'Bucket' => $bucket,
@@ -88,8 +88,8 @@ function deleteFileFromS3ByUrl($url) {
 
 function getFileFromS3($bucket, $key) {
     list($name, $extension) = explode('.', $key);
-    $client = Aws::factory('/home/neto/fileTransformDaemon/configurationFile.php')->get('s3');
-    $fileName = '/home/neto/fileTransformDaemon/temporal/' . getUniqueCode() . '.' . $extension;
+    $client = Aws::factory( __DIR__ . '/configurationFile.php')->get('s3');
+    $fileName =  __DIR__ . '/temporal/' . getUniqueCode() . '.' . $extension;
     try {
         $result = $client->getObject(array(
             'Bucket' => $bucket,

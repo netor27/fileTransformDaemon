@@ -13,7 +13,8 @@
  */
 $oldPath = set_include_path("/");
 $newPath = $oldPath . ":" . __DIR__ . "/";
-echo set_include_path($newPath);
+set_include_path($newPath);
+
 require_once 'sqsModelo.php';
 require_once 's3Modelo.php';
 require_once 'funcionesParaArchivos.php';

@@ -1,7 +1,7 @@
 <?php
 
 function logMessage($logMessage, $addNewLine = false) {
-    $file = '/home/neto/fileTransformDaemon/unovaTransformer.log';
+    $file = __DIR__ . '/unovaTransformer.log';
     if ($addNewLine) {
         $logMessage .= PHP_EOL;
     }

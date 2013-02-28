@@ -2,7 +2,6 @@
 /nbproject/
 
 # Generated files
-/temporal/
 /temporal/*
 
 #log file
@@ -23,3 +22,5 @@ Thumbs.db
 *.out
 *.swp
 
+!/temporal/file.dummy
+!/temporal/
