@@ -9,16 +9,14 @@ use Aws\Common\Aws;
 use Aws\Common\Exception\MultipartUploadException;
 use Aws\S3\Model\MultipartUpload\UploadBuilder;
 
-function uploadFileToS3($sourceFile, $folder = "") {
+function uploadFileToS3($sourceFile, $bucket, $folder = "") {
     $resultado = array("res" => false);
     // Instanciamos un cliente de s3
     $client = Aws::factory('configurationFile.php')->get('s3');
-
-    $bucket = getBucketName();
     $key = generateFileKey($sourceFile, $folder);
     while ($client->doesObjectExist($bucket, $key)) {
         //Si ese objeto ya existe, generamos otro key
-        //Este caso es muy raro, debido a la generación,
+        //Este caso es muy raro, debido a la generación de clave aleatoria
         //Pero puede pasar
         $key = generateFileKey($sourceFile, $folder);
     }
@@ -53,8 +51,6 @@ function uploadFileToS3($sourceFile, $folder = "") {
     if ($resultado['res']) {
         $resultado["bucket"] = $bucket;
         $resultado["key"] = $key;
-        $prefijoLink = getPrefijoLink();
-        $resultado["link"] = $prefijoLink . $bucket . "/" . $key;
     }
     return $resultado;
 }
@@ -69,13 +65,8 @@ function generateFileKey($sourceFile, $folder = "") {
     return $fileKey;
 }
 
-function getFolderName($extension) {
-    
-}
-
-function deleteFileFromS3($key) {
+function deleteFileFromS3($bucket, $key) {
     $client = Aws::factory('configurationFile.php')->get('s3');
-    $bucket = getBucketName();
     try {
         $client->deleteObject(array(
             'Bucket' => $bucket,
@@ -92,7 +83,23 @@ function deleteFileFromS3ByUrl($url) {
     $prefijo = getPrefijoLink();
     $url = str_ireplace($prefijo, "", $url);
     list($bucket, $key) = explode("/", $url, 2);
-    return deleteFileFromS3($key);
+    return deleteFileFromS3($bucket, $key);
+}
+
+function getFileFromS3($bucket, $key) {
+    list($name, $extension) = explode('.', $key);
+    $client = Aws::factory('configurationFile.php')->get('s3');
+    $fileName = 'temporal/' . getUniqueCode() . '.' . $extension;
+    try {
+        $result = $client->getObject(array(
+            'Bucket' => $bucket,
+            'Key' => $key,
+            'SaveAs' => $fileName
+                ));
+        return $fileName;
+    } catch (Exception $e) {
+        return null;
+    }
 }
 
 ?>

@@ -41,4 +41,14 @@ function fsize($file) {
     return ((float) ($i) * (PHP_INT_MAX + 1)) + $fmod;
 }
 
+function getUniqueCode($length = 32) {
+    $code = md5(uniqid(rand(), true));
+    if ($length > 32) {
+        while (strlen($code) < $length) {
+            $code = $code . md5(uniqid(rand(), true));
+        }
+    }
+    return substr($code, 0, $length);
+}
+
 ?>
