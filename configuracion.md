@@ -1,3 +1,6 @@
+###Este proyecto debe estar ubicado en:
+####/home/neto/fileTransformDaemon/
+
 Se debe configurar como un upstart en ubuntu
 -Crear el archivo unovaTransformer.conf en /etc/init/ con lo siguiente
 
