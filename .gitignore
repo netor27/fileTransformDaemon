@@ -5,6 +5,9 @@
 /temporal/
 /temporal/*
 
+#log file
+*.log
+
 # OS generated files #
 ######################
 *.lock
