@@ -24,3 +24,5 @@ Thumbs.db
 
 !/temporal/file.dummy
 
+!/temporal/audio.mp3
+!/temporal/video.mov
