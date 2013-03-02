@@ -104,7 +104,7 @@ while (true) {
                             enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
                         }
                         //Borramos el archivo original del S3
-                        deleteFileFromS3($msgBody->bucket, $msgBody->key);
+                        //deleteFileFromS3($msgBody->bucket, $msgBody->key);
                         //Borramos los archivos temporales
                         unlink($res['outputFileMp']);
                         unlink($res['outputFileOg']);
