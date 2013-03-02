@@ -79,20 +79,21 @@ while (true) {
                         );
                         //print_r($resutaldoGeneral);                    
                         //Hacemos el post al servidor con los datos para que actualize la bd  
-                        $url = $host . '/clases.php?a=actualizarDatosDespuesDeTransformacion';
-                        $query = http_build_query($resutaldoGeneral);
-                        $options = array(
-                            'http' => array(
-                                'method' => 'POST',
-                                'header' => "Connection: close\r\n" .
-                                "Content-Type: application/x-www-form-urlencoded\r\n" .
-                                "Content-Length: " . strlen($query) . "\r\n",
-                                'content' => $query
-                            )
-                        );
-                        $context = stream_context_create($options);
-                        $result = file_get_contents($url, false, $context);
-
+//                        $url = $host . '/clases.php?a=actualizarDatosDespuesDeTransformacion';
+//                        $query = http_build_query($resutaldoGeneral);
+//                        $options = array(
+//                            'http' => array(
+//                                'method' => 'POST',
+//                                'header' => "Connection: close\r\n" .
+//                                "Content-Type: application/x-www-form-urlencoded\r\n" .
+//                                "Content-Length: " . strlen($query) . "\r\n",
+//                                'content' => $query
+//                            )
+//                        );
+//                        $context = stream_context_create($options);
+//                        $result = file_get_contents($url, false, $context);
+                        $result = "ok";
+                        echo 'No hacemos el post de regreso';
                         if ($result == "ok") {
                             logMessage("Se transformo correctamente", true);
                             //echo 'todo ok';
