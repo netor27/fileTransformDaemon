@@ -21,7 +21,9 @@ function transformarVideo($file) {
             $outputFileOgv = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . "_.webm";
         }
 
-        $cmd = 'ffmpeg -i "' . $file . '" -acodec libvo_aacenc -vcodec libx264 "' . $outputFileMp4 . '" -vcodec libvpx -acodec libvorbis "' . $outputFileOgv . '"';
+        //command 
+        //ffmpeg -i "file" -acodec libfaac -vcodec libx264 "mp4" -vcodec libvpx -acodec libvorbis "ogv"
+        $cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp4 . '" "' . $outputFileOgv . '"';
         //putLog($cmd);
         //Le quitamos el límite de ejecución al script
         set_time_limit(0);
@@ -50,7 +52,8 @@ function transformarAudio($file) {
         $outputFileOgg = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . "_.ogg";
     }
 
-    $cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp3 . '" -acodec libvorbis -ar 44100 -b 200k "' . $outputFileOgg . '"';
+    //$cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp3 . '" -acodec libvorbis -ar 44100 -b 200k "' . $outputFileOgg . '"';
+    $cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp3 . '" "' . $outputFileOgg . '"';
     //putLog($cmd);
     ob_start();
     passthru($cmd, $return_var);
