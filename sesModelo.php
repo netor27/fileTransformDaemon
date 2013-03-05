@@ -10,7 +10,7 @@ function sendMailSES($text, $html, $subject, $from, $to = array()) {
     $html = utf8_decode($html);
     $subject = utf8_decode($subject);
     try {
-        $client = Aws::factory(getServerRoot() . '/modulos/aws/modelos/configurationFile.php')->get('ses');
+        $client = Aws::factory( __DIR__ . '/configurationFile.php')->get('ses');
         echo 'Se creo el cliente<br>';
         $messageId = $client->sendEmail(array(
             'Source' => $from,
