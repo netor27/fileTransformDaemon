@@ -25,8 +25,6 @@ logMessage("Iniciando Daemon.." . date("d-m-Y H:i:s"), true);
 logMessage("Se cargaron las librerías", true);
 
 while (true) {
-    logMessage("Esperando mensaje...".date("d-m-Y H:i:s"), true);
-
 //Obtenemos el mensaje
     $mensaje = readMessageFromQueue();
     if (isset($mensaje)) {
@@ -99,6 +97,7 @@ while (true) {
                             //enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
                         } else {
                             //echo 'error al actualizar';
+                            logMessage( "Ocurrio un error al actualizar la base de datos en el host", true);
                             $emailBody = "Ocurrio un error al actualizar la base de datos en el host";
                             enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
                         }
@@ -107,31 +106,33 @@ while (true) {
                         //Borramos los archivos temporales
                         unlink($res['outputFileMp']);
                         unlink($res['outputFileOg']);
-                        unlink($fileName);
+                        unlink($fileName);                        
                         logMessage("Se borraron los archivos temporales", true);
                     } else {
-                        $emailBody = "Error al subir archivo og";
+                        logMessage("Error al subir archivo og", true);
+                        $emailBody = "Error al subir archivo og";                        
                         enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
                     }
                 } else {
                     //echo ' Error al subir el archivo mp ';
+                    logMessage("Error ar subir el archivo mp", true);
                     $emailBody = "Error ar subir el archivo mp";
                     enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
                 }
             } else {
-                //echo ' Ocurrió un error con la transformación error= ' . $res['return_var'];
+                logMessage("Ocurrió un error con la transformación, return_var=" . $res['return_var'], true);
                 $emailBody = "Ocurrió un error con la transformación, return_var=" . $res['return_var'];
                 enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
             }
         } else {
+            logMessage("No se pudo descargar el archivo $msgBody->bucket/$msgBody->key", true);
             $emailBody = "No se pudo descargar el archivo $msgBody->bucket/$msgBody->key";
             enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
         }
         deleteMessageFromQueue($mensaje['ReceiptHandle']);
     }
     //Dormimos el proceso por X segundos
-    $xSeg = 45;
-    
+    $xSeg = 45;    
     usleep($xSeg * 1000000);
 }
 
