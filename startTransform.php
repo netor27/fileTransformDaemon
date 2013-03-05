@@ -139,14 +139,14 @@ function enviarMailErrorTransformacion($emailBody, $host, $mensajeRecibido) {
     $urlPublicar = $host . "/publicarMensaje.php?key=er105706&msg=" . urlencode($mensajeRecibido);
     $emailBody .= "<br><br>Mensaje recibido: " . $mensajeRecibido;
     $emailBody .= "<br><br><a href='" . $urlPublicar . "'>Publicar de nuevo</a>";
-    require_once 'emailModelo.php';
-    $receiver = "neto.r27@gmail.com";
-    $from = "unova-noreply@unova.mx";
+    require_once 'sesModelo.php';
+    $receiver[] = "neto.r27@gmail.com";
+    $from = "Unova-noreply@unova.mx";
     $subject = "Error al transformar contenido";
     $text = 'Ocurrio un error en el procedimiento de transformacion\n\n' . $emailBody;
     $html = '<h3>Ocurrio un error en el procedimiento de transformacion</h3>
         <br><br>' . $emailBody . '<br><br><br>';
-    return sendMail($text, $html, $subject, $from, $receiver);
+    return sendMailSES($text, $html, $subject, $from, $receiver);
 }
 
 ?>
