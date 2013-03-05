@@ -87,7 +87,8 @@ function deleteFileFromS3ByUrl($url) {
 }
 
 function getFileFromS3($bucket, $key) {
-    list($name, $extension) = explode('.', $key);
+    $exploded = explode('.', $key);
+    $extension = end($exploded);
     $client = Aws::factory( __DIR__ . '/configurationFile.php')->get('s3');
     $fileName =  __DIR__ . '/temporal/' . getUniqueCode() . '.' . $extension;
     try {

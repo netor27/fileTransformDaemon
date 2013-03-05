@@ -33,6 +33,7 @@ while (true) {
         deleteMessageFromQueue($mensaje['ReceiptHandle']);
         //hay un mensaje, lo decodificamos
         $msgBody = json_decode($mensaje['Body']);
+        logMessage("bucket=>" . $msgBody->bucket . ", key=>" . $msgBody->key . ", host=>" . $msgBody->host . ", idClase=>" . $msgBody->idClase,true);
         //Obtenemos el host del que viene el mensaje
         $host = $msgBody->host;
         if (strpos($host, "http://") === false) {
@@ -42,6 +43,7 @@ while (true) {
         //Descargamos el archivo a un archivo temporal
         $fileName = getFileFromS3($msgBody->bucket, $msgBody->key);
         if (isset($fileName)) {
+            logMessage("Se descargo correctamente el archivo $fileName",true);
             //El archivo se descargo con éxito
             //Transformamos y obtenemos la duración              
             switch ($msgBody->tipo) {
@@ -57,7 +59,7 @@ while (true) {
                     break;
             }
             //print_r($res);
-            if ($res >= 0) {
+            if ($res == 0) {
                 //El archivo se transformo correctamente
                 $resMp = uploadFileToS3($res['outputFileMp'], $msgBody->bucket, $folder);
                 if ($resMp['res']) {
@@ -94,12 +96,9 @@ while (true) {
                         $result = file_get_contents($url, false, $context);
                         if ($result == "ok") {
                             logMessage("Se transformo correctamente", true);
-                            //echo 'todo ok';
-                            //$emailBody = "Todo se hizo bien";
-                            //enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
                         } else {
                             //echo 'error al actualizar';
-                            logMessage( "Ocurrio un error al actualizar la base de datos en el host", true);
+                            logMessage("Ocurrio un error al actualizar la base de datos en el host", true);
                             $emailBody = "Ocurrio un error al actualizar la base de datos en el host";
                             enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
                         }
@@ -108,11 +107,10 @@ while (true) {
                         //Borramos los archivos temporales
                         unlink($res['outputFileMp']);
                         unlink($res['outputFileOg']);
-                        unlink($fileName);                        
                         logMessage("Se borraron los archivos temporales", true);
                     } else {
                         logMessage("Error al subir archivo og", true);
-                        $emailBody = "Error al subir archivo og";                        
+                        $emailBody = "Error al subir archivo og";
                         enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
                     }
                 } else {
@@ -126,6 +124,8 @@ while (true) {
                 $emailBody = "Ocurrió un error con la transformación, return_var=" . $res['return_var'];
                 enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
             }
+            //borramos el archivo descargado
+            unlink($fileName);
         } else {
             logMessage("No se pudo descargar el archivo $msgBody->bucket/$msgBody->key", true);
             $emailBody = "No se pudo descargar el archivo $msgBody->bucket/$msgBody->key";
@@ -133,7 +133,7 @@ while (true) {
         }
     }
     //Dormimos el proceso por X segundos
-    $xSeg = 45;    
+    $xSeg = 45;
     usleep($xSeg * 1000000);
 }
 

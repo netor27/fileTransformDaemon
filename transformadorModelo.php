@@ -9,6 +9,7 @@
 function transformarVideo($file) {
     if (file_exists($file)) {
         $return_var = -1;
+        $return_var2 = -1;
         $duration = obtenerDuracion($file);
         $pathInfo = pathinfo($file);
 
@@ -16,14 +17,14 @@ function transformarVideo($file) {
         if (file_exists($outputFileMp4)) {
             $outputFileMp4 = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . "_.mp4";
         }
-        $outputFileOgv = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . ".webm";
+        $outputFileOgv = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . ".ogv";
         if (file_exists($outputFileOgv)) {
-            $outputFileOgv = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . "_.webm";
+            $outputFileOgv = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . "_.ogv";
         }
 
         //command 
         //ffmpeg -i "file" -acodec libfaac -vcodec libx264 "mp4" -vcodec libvpx -acodec libvorbis "ogv"
-        $cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp4 . '" "' . $outputFileOgv . '"';
+        $cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp4 . '"';
         //putLog($cmd);
         //Le quitamos el límite de ejecución al script
         set_time_limit(0);
@@ -32,35 +33,76 @@ function transformarVideo($file) {
         $aux = ob_get_contents();
         ob_end_clean();
 
+        $cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileOgv . '"';
+        //putLog($cmd);
+        //Le quitamos el límite de ejecución al script
+        set_time_limit(0);
+        ob_start();
+        passthru($cmd, $return_var2);
+        $aux = ob_get_contents();
+        ob_end_clean();
+
+        if ($return_var !== 0 || $return_var2 !== 0) {
+            $return_var = -1;
+            if (file_exists($outputFileMp4)) {
+                unlink($outputFileMp4);
+            }
+            if (file_exists($outputFileOgv)) {
+                unlink($outputFileOgv);
+            }
+        }
+
         return array("return_var" => $return_var, "duration" => $duration, "outputFileMp" => $outputFileMp4, "outputFileOg" => $outputFileOgv);
-    }else{
+    } else {
         return array("return_var" => -2, "error" => "El archivo no existe");
     }
 }
 
 function transformarAudio($file) {
-    $return_var = -1;
-    $duration = obtenerDuracion($file);
-    $pathInfo = pathinfo($file);
+    if (file_exists($file)) {
+        $return_var = -1;
+        $return_var2 = -1;
+        $duration = obtenerDuracion($file);
+        $pathInfo = pathinfo($file);
 
-    $outputFileMp3 = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . ".mp3";
-    if (file_exists($outputFileMp3)) {
-        $outputFileMp3 = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . "_.mp3";
+        $outputFileMp3 = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . ".mp3";
+        if (file_exists($outputFileMp3)) {
+            $outputFileMp3 = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . "_.mp3";
+        }
+        $outputFileOgg = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . ".ogg";
+        if (file_exists($outputFileOgg)) {
+            $outputFileOgg = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . "_.ogg";
+        }
+
+        //$cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp3 . '" -acodec libvorbis -ar 44100 -b 200k "' . $outputFileOgg . '"';
+        $cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp3 . '"';
+        //putLog($cmd);
+        ob_start();
+        passthru($cmd, $return_var);
+        $aux = ob_get_contents();
+        ob_end_clean();
+
+        $cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileOgg . '"';
+        //putLog($cmd);
+        ob_start();
+        passthru($cmd, $return_var2);
+        $aux = ob_get_contents();
+        ob_end_clean();
+
+        if ($return_var !== 0 || $return_var2 !== 0) {
+            $return_var = -1;
+            if (file_exists($outputFileMp3)) {
+                unlink($outputFileMp3);
+            }
+            if (file_exists($outputFileOgg)) {
+                unlink($outputFileOgg);
+            }
+        }
+
+        return array("return_var" => $return_var, "duration" => $duration, "outputFileMp" => $outputFileMp3, "outputFileOg" => $outputFileOgg);
+    } else {
+        return array("return_var" => -2, "error" => "El archivo no existe");
     }
-    $outputFileOgg = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . ".ogg";
-    if (file_exists($outputFileOgg)) {
-        $outputFileOgg = $pathInfo['dirname'] . "/" . $pathInfo['filename'] . "_.ogg";
-    }
-
-    //$cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp3 . '" -acodec libvorbis -ar 44100 -b 200k "' . $outputFileOgg . '"';
-    $cmd = 'ffmpeg -i "' . $file . '" "' . $outputFileMp3 . '" "' . $outputFileOgg . '"';
-    //putLog($cmd);
-    ob_start();
-    passthru($cmd, $return_var);
-    $aux = ob_get_contents();
-    ob_end_clean();
-
-    return array("return_var" => $return_var, "duration" => $duration, "outputFileMp" => $outputFileMp3, "outputFileOg" => $outputFileOgg);
 }
 
 function obtenerDuracion($file) {
