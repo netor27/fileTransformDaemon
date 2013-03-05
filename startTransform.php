@@ -29,6 +29,8 @@ while (true) {
     $mensaje = readMessageFromQueue();
     if (isset($mensaje)) {
         logMessage(" Se encontro un mensaje", true);
+        //Si encontramos un mensaje, lo borramos
+        deleteMessageFromQueue($mensaje['ReceiptHandle']);
         //hay un mensaje, lo decodificamos
         $msgBody = json_decode($mensaje['Body']);
         //Obtenemos el host del que viene el mensaje
@@ -129,7 +131,6 @@ while (true) {
             $emailBody = "No se pudo descargar el archivo $msgBody->bucket/$msgBody->key";
             enviarMailErrorTransformacion($emailBody, $host, $mensaje['Body']);
         }
-        deleteMessageFromQueue($mensaje['ReceiptHandle']);
     }
     //Dormimos el proceso por X segundos
     $xSeg = 45;    
