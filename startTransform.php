@@ -33,7 +33,7 @@ while (true) {
         deleteMessageFromQueue($mensaje['ReceiptHandle']);
         //hay un mensaje, lo decodificamos
         $msgBody = json_decode($mensaje['Body']);
-        logMessage("bucket=>" . $msgBody->bucket . ", key=>" . $msgBody->key . ", host=>" . $msgBody->host . ", idClase=>" . $msgBody->idClase,true);
+        logMessage("bucket=>" . $msgBody->bucket . ", key=>" . $msgBody->key . ", host=>" . $msgBody->host . ", idClase=>" . $msgBody->idClase, true);
         //Obtenemos el host del que viene el mensaje
         $host = $msgBody->host;
         if (strpos($host, "http://") === false) {
@@ -43,7 +43,7 @@ while (true) {
         //Descargamos el archivo a un archivo temporal
         $fileName = getFileFromS3($msgBody->bucket, $msgBody->key);
         if (isset($fileName)) {
-            logMessage("Se descargo correctamente el archivo $fileName",true);
+            logMessage("Se descargo correctamente el archivo " . $msgBody->bucket . "/" . $msgBody->key, true);
             //El archivo se descargo con éxito
             //Transformamos y obtenemos la duración              
             switch ($msgBody->tipo) {
