@@ -59,7 +59,7 @@ while (true) {
                     break;
             }
             //print_r($res);
-            if ($res == 0) {
+            if ($res['return_var'] == 0) {
                 //El archivo se transformo correctamente
                 $resMp = uploadFileToS3($res['outputFileMp'], $msgBody->bucket, $folder);
                 if ($resMp['res']) {
