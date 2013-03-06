@@ -33,7 +33,7 @@ function readMessageFromQueue() {
     $result = $client->receiveMessage(array(
         'QueueUrl' => getQueueUrl(),
         'MaxNumberOfMessages' => 1,
-        'VisibilityTimeout' => 3600,
+        'VisibilityTimeout' => 60,
         'WaitTimeSeconds' => 20
             ));
 
