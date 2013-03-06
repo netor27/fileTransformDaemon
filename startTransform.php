@@ -94,7 +94,8 @@ while (true) {
                         );
                         $context = stream_context_create($options);
                         $result = file_get_contents($url, false, $context);
-                        if ($result == "ok") {
+                        $pos = strpos($result, "todo sereno");                        
+                        if ($pos !== false) {
                             logMessage("Se transformo correctamente", true);
                         } else {
                             //echo 'error al actualizar';
